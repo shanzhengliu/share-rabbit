@@ -11,7 +11,7 @@ export class ReceivedUtils {
     this.progressCallback = () => {};
 
     this.localConnection = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun4.l.google.com:19302" }],
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" },{urls:"stun:stun.duocom.es:3478"}],
     });
 
     this.localConnection.onicecandidate = (e) => {

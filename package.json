@@ -13,7 +13,9 @@
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.9.0",
     "http": "^0.0.1-security",
+   
     "next": "^14.2.3",
+
     "qrcode": "^1.5.3",
     "react": "^18",
     "react-dom": "^18",
