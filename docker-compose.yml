@@ -1,6 +1,6 @@
 version: '3'
 services:
   web:
-    image: rabbit-share:latest
+    image: samliu960522/rabbit-share:latest
     ports:
       - "3000:3000"
