@@ -11,6 +11,7 @@ the sharing is annoymous and server won't store any data or information.
 - **Real-Time Communication**: Incorporating Socket.IO, Rabbit Share offers seamless real-time capabilities, making it easier to manage file sharing and communication.
 - **Easy to Use**: With a user-friendly interface, sharing files is as simple as a few clicks.
 - **Cross-Platform Compatibility**: Accessible from any device that supports a web browser, enabling you to share and download files on the go.
+- **Multiplate Language Support**: now the application support Chinese, English, Japanese, French, Geman, Korean, Italian.  
 
 ## Getting Started
 
