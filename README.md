@@ -1,6 +1,8 @@
 # Rabbit Share
 
-Welcome to **Rabbit Share**, a cutting-edge platform designed to transform the way you share files. Leveraging the robust technologies of Next.js, WebRTC, and Socket.IO, Rabbit Share enables users to create shareable links for local files, facilitating peer-to-peer (P2P) downloads without the need for uploading files to a server. This method ensures privacy, efficiency, and speed, redefining file sharing in the digital age.
+Welcome to **Rabbit Share**, a cutting-edge platform designed to transform the way you share files. Leveraging the robust technologies of Next.js, WebRTC, and Socket.IO, Rabbit Share enables users to create shareable links for local files, facilitating peer-to-peer (P2P) downloads without the need for uploading files to a server. This method ensures privacy, efficiency, and speed, redefining file sharing in the digital age.  
+
+the sharing is annoymous and server won't store any data or information.
 
 ## Features
 
