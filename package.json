@@ -1,0 +1,38 @@
+{
+  "name": "share-p2p",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "flowbite": "^2.3.0",
+    "flowbite-react": "^0.9.0",
+    "http": "^0.0.1-security",
+    "next": "^14.2.3",
+    "qrcode": "^1.5.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "url": "^0.11.3",
+    "uuid": "^9.0.1",
+    "webrtc": "^1.14.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/uuid": "^9.0.8",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
