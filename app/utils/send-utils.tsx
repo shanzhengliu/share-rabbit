@@ -11,17 +11,29 @@ export class SendUtils {
   offerId: any;
   lastReportedProgress: number = 0;
   reportThreshold = 0;
+  targetSocket: any;
+  candidate: any;
 
   constructor(io: any, file: any) {
     this.socket = io;
     this.file = file;
     this.localConnection = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" },{urls:"stun:stun.duocom.es:3478"}],
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun.duocom.es:3478" },
+      ],
     });
 
     this.localConnection.onicecandidate = (e) => {
       if (e.candidate) {
-        this.socket.emit("iceCandidate", { candidate: e.candidate });
+        this.candidate = e.candidate;
+      }
+      if (e.candidate) {
+        this.socket.emit("iceCandidate", {
+          candidate: e.candidate.toJSON(),
+          targetSocket: this.targetSocket,
+          sender: "send-utils",
+        });
       }
     };
 
@@ -42,11 +54,10 @@ export class SendUtils {
       (data: { answer: RTCSessionDescriptionInit; targetSocket: any }) => {
         if (this.localConnection) {
           const answer = new RTCSessionDescription(data.answer);
+          this.targetSocket = data.targetSocket;
           this.localConnection
             .setRemoteDescription(answer)
-            .then(() => {
-              console.log("Answer set as the remote description");
-            })
+            .then(() => {})
             .catch((error) =>
               console.error("Failed to set remote description:", error)
             );
@@ -58,7 +69,6 @@ export class SendUtils {
       "iceCandidate",
       (data: { candidate: RTCIceCandidateInit | undefined }) => {
         if (data.candidate && this.localConnection) {
-          console.log("Adding ICE candidate: send-utils", data.candidate);
           this.localConnection
             .addIceCandidate(new RTCIceCandidate(data.candidate))
             .catch((error) =>
@@ -71,8 +81,6 @@ export class SendUtils {
 
   setupDataChannelEvents = () => {
     this.dataChannel!.onopen = () => {
-      console.log("Data channel is open and ready to be used.");
-      console.log(this.file);
       this.sendFile();
     };
     this.dataChannel!.onclose = () => {
@@ -94,13 +102,20 @@ export class SendUtils {
     this.localConnection
       .createOffer()
       .then((offer) => {
+        this.targetSocket = targetSocket;
         return this.localConnection.setLocalDescription(offer);
       })
       .then(() => {
-        console.log("Sending offer to targetSocket:", targetSocket);
         this.socket.emit("offer", {
           offer: this.localConnection.localDescription,
           targetSocket: targetSocket,
+        });
+      })
+      .then(() => {
+        this.socket.emit("iceCandidate", {
+          candidate: this.candidate,
+          targetSocet: this.targetSocket,
+          sender: "sender-utils",
         });
       })
       .catch((error) => console.error("Error creating offer:", error));
@@ -121,11 +136,13 @@ export class SendUtils {
       this.offset += e.target.result.byteLength;
 
       if (this.offset - this.lastReportedProgress >= this.reportThreshold) {
-        
         this.lastReportedProgress = this.offset;
-        this.dataChannel.send(`{"lastReportedProgress":${((this.offset / this.file.size) * 100).toFixed(
-            2
-          )} }`);
+        this.dataChannel.send(
+          `{"lastReportedProgress":${(
+            (this.offset / this.file.size) *
+            100
+          ).toFixed(2)} }`
+        );
       }
       if (this.offset < this.file.size) {
         if (
@@ -137,7 +154,6 @@ export class SendUtils {
           this.pauseSending = true;
         }
       } else {
-        
         this.dataChannel.send(`{"flag":"FILE_TRANSFER_COMPLETE"}`);
       }
     };
@@ -147,7 +163,6 @@ export class SendUtils {
 
   sendFile = () => {
     this.reportThreshold = Math.floor(this.file.size / 10);
-   
 
     const metadata = JSON.stringify({
       fileName: this.file.name,

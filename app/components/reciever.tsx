@@ -61,48 +61,52 @@ export const Receiver = (props: { sharedId: any }) => {
       <div className="flex flex-col items-center justify-center w-full h-screen bg-gray-100">
         <div className="p-6 rounded-lg shadow-lg bg-white max-w-md text-center space-y-4">
           <span className="block text-lg font-medium text-gray-800">
-            Sorry your file share link is invalid,<br></br> Maybe your file share provider has left.
+            Sorry your file share link is invalid,<br></br> Maybe your file
+            share provider has left.
           </span>
         </div>
       </div>
     );
   }
   return (
-<div className="flex flex-col items-center justify-center w-full h-screen bg-gray-100">
-<div className="p-4 md:p-6 lg:p-8 rounded-lg shadow-lg bg-white max-w-md md:max-w-lg space-y-3 md:space-y-4">
-  <span className="block text-sm font-medium text-gray-800">
-    {translation("sharedId")}: <span className="font-semibold">{offerId}</span>
-  </span>
-  <span className="block text-sm font-medium text-gray-800">
-    {translation("fileName")}: <span className="font-semibold">{fileName}</span>
-  </span>
-  <span className="block text-sm font-medium text-gray-800">
-    {translation("fileSize")}:
-    <span className="font-semibold">{getfilesize(filesize ? Number(filesize) : 0)}</span>
-  </span>
+    <div className="flex flex-col items-center justify-center w-full h-screen bg-gray-100">
+      <div className="p-4 md:p-6 lg:p-8 rounded-lg shadow-lg bg-white max-w-md md:max-w-lg space-y-3 md:space-y-4">
+        <span className="block text-sm font-medium text-gray-800">
+          {translation("sharedId")}:{" "}
+          <span className="font-semibold">{offerId}</span>
+        </span>
+        <span className="block text-sm font-medium text-gray-800">
+          {translation("fileName")}:{" "}
+          <span className="font-semibold">{fileName}</span>
+        </span>
+        <span className="block text-sm font-medium text-gray-800">
+          {translation("fileSize")}:
+          <span className="font-semibold">
+            {getfilesize(filesize ? Number(filesize) : 0)}
+          </span>
+        </span>
 
-  {/* Button container with flex and centering */}
-  <div className="flex justify-center w-full">
-    <button
-      onClick={() => recievedUtilsRef.current?.sendDownloadRequest(offerId)}
-      className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"
-    >
-      {translation("download")}
-    </button>
-  </div>
+        {/* Button container with flex and centering */}
+        <div className="flex justify-center w-full">
+          <button
+            onClick={() =>
+              recievedUtilsRef.current?.sendDownloadRequest(offerId)
+            }
+            className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"
+          >
+            {translation("download")}
+          </button>
+        </div>
 
-  <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-    <div
-      className={`bg-blue-600 h-1.5 rounded-full`}
-      style={{ width: `${progress}%` }}
-    ></div>
-  </div>
+        <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+          <div
+            className={`bg-blue-600 h-1.5 rounded-full`}
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
 
-  <div className="text-sm font-medium">{progress}%</div>
-</div>
-</div>
-
-
-
+        <div className="text-sm font-medium">{progress}%</div>
+      </div>
+    </div>
   );
 };

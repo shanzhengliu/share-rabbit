@@ -6,24 +6,27 @@ export class ReceivedUtils {
   currentFileMetadata: any = {};
   lastReportedProgress: number = 0;
   progressCallback: (progress: number) => void;
+  targetSocket: any;
+  candidate: any;
   constructor(io: any) {
     this.socket = io;
     this.progressCallback = () => {};
 
     this.localConnection = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" },{urls:"stun:stun.duocom.es:3478"}],
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun.duocom.es:3478" },
+      ],
     });
 
     this.localConnection.onicecandidate = (e) => {
-      if (e.candidate) {
-        this.socket.emit("iceCandidate", { candidate: e.candidate });
-      }
+      this.candidate = e.candidate;
     };
 
     this.socket.on("offer", (data: any) => {
       const { offer, targetSocket } = data;
-
-      this.createAnswer(offer, targetSocket); 
+      this.targetSocket = targetSocket;
+      this.createAnswer(offer, targetSocket);
     });
 
     this.socket.on("fileMeta", (data: any) => {
@@ -36,12 +39,10 @@ export class ReceivedUtils {
         if (data.candidate && this.localConnection) {
           this.localConnection
             .addIceCandidate(new RTCIceCandidate(data.candidate))
-            .catch((error) =>
-              {
-                alert("Failed to connent, maybe share file provider is offline");
-                console.error("Failed to add ICE Candidate:", error)
-              }
-            );
+            .catch((error) => {
+              alert("Failed to connent, maybe share file provider is offline");
+              console.error("Failed to add ICE Candidate:", error);
+            });
         }
       }
     );
@@ -51,11 +52,9 @@ export class ReceivedUtils {
       this.receiveChannel = event.channel;
       this.receiveChannel.onmessage = this.handleReceiveMessage;
       this.receiveChannel.onopen = () => {
-        console.log("Data channel is open and ready to be used.");
         alert("Connected to sender. Ready to receive file.");
         this.receiveChannel?.send("download");
       };
-      // setupReceiveChannelEvents();
     };
 
     this.localConnection
@@ -64,6 +63,7 @@ export class ReceivedUtils {
         return this.localConnection.createAnswer();
       })
       .then((answer) => {
+        this.targetSocket = targetSocket;
         return this.localConnection.setLocalDescription(answer);
       })
       .then(() => {
@@ -78,7 +78,8 @@ export class ReceivedUtils {
       if (e.candidate) {
         this.socket.emit("iceCandidate", {
           candidate: e.candidate.toJSON(),
-          targetSocket,
+          targetSocket: this.targetSocket,
+          sender: "recieved-utils",
         });
       }
     };

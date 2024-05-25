@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {  FileInput } from "flowbite-react";
+import { FileInput } from "flowbite-react";
 import { useSocket } from "../utils/socket-context";
 import { SendUtils } from "../utils/send-utils";
 import { v4 as uuidv4 } from "uuid";
@@ -21,38 +21,36 @@ export const Sender: React.FC = () => {
     }
   };
 
-  
-    const copyTextToClipboard = async (text:any) => {
-      if ('clipboard' in navigator) {
-        try {
-          await navigator.clipboard.writeText(text);
-          console.log('Text copied to clipboard');
-          alert('Text copied to clipboard');
-        } catch (err) {
-          console.error('Failed to copy: ', err);
-          fallbackCopyTextToClipboard(text);
-        }
-      } else {
-      
+  const copyTextToClipboard = async (text: any) => {
+    if ("clipboard" in navigator) {
+      try {
+        await navigator.clipboard.writeText(text);
+        console.log("Text copied to clipboard");
+        alert("Text copied to clipboard");
+      } catch (err) {
+        console.error("Failed to copy: ", err);
         fallbackCopyTextToClipboard(text);
       }
-    };
-  
-    const fallbackCopyTextToClipboard = (text:any) => {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        const successful = document.execCommand('copy');
-        const msg = successful ? 'successful' : 'unsuccessful';
-        console.log(`Fallback: Copying text command was ${msg}`);
-        alert(`Fallback: Copying text command was ${msg}`);
-      } catch (err) {
-        console.error('Fallback: Oops, unable to copy', err);
-      }
-      document.body.removeChild(textarea);
-    };
+    } else {
+      fallbackCopyTextToClipboard(text);
+    }
+  };
+
+  const fallbackCopyTextToClipboard = (text: any) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      const successful = document.execCommand("copy");
+      const msg = successful ? "successful" : "unsuccessful";
+      console.log(`Fallback: Copying text command was ${msg}`);
+      alert(`Fallback: Copying text command was ${msg}`);
+    } catch (err) {
+      console.error("Fallback: Oops, unable to copy", err);
+    }
+    document.body.removeChild(textarea);
+  };
 
   useEffect(() => {
     if (!socket) {
@@ -60,16 +58,14 @@ export const Sender: React.FC = () => {
     }
     if (socket) {
       const createOfferListener = (event: any) => {
-      
         if (!file) {
           console.log("No file selected yet.");
           return;
         }
-        
+
         const utils = new SendUtils(socket, file);
         utils.createOffer(event.targetSocket);
       };
-      console.log("Registering 'createOffer' event listener.");
       socket.off("createOffer", createOfferListener);
       socket.on("createOffer", createOfferListener);
     }
@@ -101,44 +97,42 @@ export const Sender: React.FC = () => {
 
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-50">
-        
-  <div className="p-6 max-w-sm w-full bg-white shadow-md rounded-lg text-center">
+      <div className="p-6 max-w-sm w-full bg-white shadow-md rounded-lg text-center">
+        <FileInput onChange={fileOnChange} />
 
-    <FileInput onChange={fileOnChange} />
-    
-   
-    <div className="flex justify-center mt-4">
-      <button
-        onClick={shareButtonOnClick}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-all duration-150 ease-in-out"
-      >
-        {translation("generateShareLink")}
-      </button>
-    </div>
-    <div className="flex justify-center mt-4 w-full">
-    <canvas id="canvas" style={{"height":0}}></canvas>
-    </div>
-    {shareLink && (
-      <div className="mt-4 space-x-2 flex justify-center">
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={shareLink}
-          className="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-all duration-150 ease-in-out"
-        >
-          {translation("openLink")}
-        </a>
-        
-        <button
-          onClick={() => {copyTextToClipboard(shareLink)}}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-all duration-150 ease-in-out"
-        >
-          {translation("copyLink")}
-        </button>
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={shareButtonOnClick}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-all duration-150 ease-in-out"
+          >
+            {translation("generateShareLink")}
+          </button>
+        </div>
+        <div className="flex justify-center mt-4 w-full">
+          <canvas id="canvas" style={{ height: 0 }}></canvas>
+        </div>
+        {shareLink && (
+          <div className="mt-4 space-x-2 flex justify-center">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={shareLink}
+              className="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-all duration-150 ease-in-out"
+            >
+              {translation("openLink")}
+            </a>
+
+            <button
+              onClick={() => {
+                copyTextToClipboard(shareLink);
+              }}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-all duration-150 ease-in-out"
+            >
+              {translation("copyLink")}
+            </button>
+          </div>
+        )}
       </div>
-    )}
-  </div>
-</div>
-
+    </div>
   );
 };

@@ -61,6 +61,7 @@ app.prepare().then(() => {
 
     socket.on("iceCandidate", (data) => {
       const { candidate, targetSocket } = data;
+      data.targetSocket = socket.id;
       io.to(targetSocket).emit("iceCandidate", data);
     });
 
