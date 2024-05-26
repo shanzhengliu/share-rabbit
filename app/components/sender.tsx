@@ -130,6 +130,27 @@ export const Sender: React.FC = () => {
             >
               {translation("copyLink")}
             </button>
+            <button
+            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transform transition-all duration-150 ease-in-out"
+              onClick={() => {
+                let shareData = {
+                    title: "RabbitShare",
+                    text: "Share files with RabbitShare",
+                    url: shareLink,
+                    };
+                if (
+                  navigator.share &&
+                  navigator.canShare(shareData)
+                ) {
+                  navigator.share(shareData);
+                }
+                else {
+                  alert(translation("browserNotSupported"));
+                }
+              }}
+            >
+              {translation("shareForward")}
+            </button>
           </div>
         )}
       </div>
